@@ -8,7 +8,8 @@
       "sslPort": 44372
     }
   },
-  "profiles": {
+  "profiles": 
+  {
     "CityInfo.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
