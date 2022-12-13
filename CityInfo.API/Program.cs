@@ -18,9 +18,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.Run(async (contex) => {
-    await contex.Response.WriteAsync("helllollllooooo");
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    
 });
+
+
 #endregion
 
 app.Run();
