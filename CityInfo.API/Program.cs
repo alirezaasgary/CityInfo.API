@@ -1,8 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers( option =>
+{ 
+    
+    option.ReturnHttpNotAcceptable=true; //جهت پشتیبانی از فرمت خواص
+}).AddXmlDataContractSerializerFormatters(); //جهت پشتیبانی از فرمت xml
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
