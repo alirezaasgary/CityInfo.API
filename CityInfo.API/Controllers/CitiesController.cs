@@ -3,20 +3,20 @@
 namespace CityInfo.API.Controllers
 {
     [ApiController]
+    [Route("api/Cities")]
     public class CitiesController : ControllerBase
     {
-        [HttpGet("api/cities")]
+        [HttpGet]
         public JsonResult GetCities()
         {
 
-            return new JsonResult(
-                  new List<object>
-                  {
-                    new {id=1,name="tehran" },
-                    new {id=2,name="Moscow"}
-                  }
-                  );
+            return new JsonResult(CityDataStore.current.Cities);
 
+        }
+        [HttpGet("{id}")]
+        public JsonResult GetCity(int id)
+        {
+            return new JsonResult(CityDataStore.current.Cities.FirstOrDefault(x => x.Id == id));
         }
     }
 }
