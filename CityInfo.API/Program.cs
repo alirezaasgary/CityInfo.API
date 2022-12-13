@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.AspNetCore.StaticFiles;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -12,6 +14,11 @@ builder.Services.AddControllers( option =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+
+//Addsingleton : یک عدد نمونه سازی کن و بده همه استفاده کنن
+//AddScope : به ازای هر کار بر یک نمونه بساز و بده استفاده کنه
+
 
 var app = builder.Build();
 
