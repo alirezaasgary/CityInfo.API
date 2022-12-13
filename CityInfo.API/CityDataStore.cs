@@ -15,14 +15,14 @@ namespace CityInfo.API
                 {Id=1,Name="Moscow",Description="",
                     PointOfIntrests=new List<PointOfIntrestDto>()
                     {
-                    new PointOfIntrestDto() { id=1,Name="meydansorkh" ,Description=""},
-                    new PointOfIntrestDto() {id=2,Name="moscow city" ,Description=""}
+                    new PointOfIntrestDto() { Id=1,Name="meydansorkh" ,Description=""},
+                    new PointOfIntrestDto() {Id=2,Name="moscow city" ,Description=""}
                     } 
                 },
                 new CityDto() {Id=2,Name="Tehran",Description="" 
                 ,PointOfIntrests=new List<PointOfIntrestDto>()
                 {
-                    new PointOfIntrestDto() {id=3,Name="milad" ,Description=""}
+                    new PointOfIntrestDto() {Id=3,Name="milad" ,Description=""}
                 }
                 },
                 new CityDto() {Id=3,Name="Room",Description="" }
