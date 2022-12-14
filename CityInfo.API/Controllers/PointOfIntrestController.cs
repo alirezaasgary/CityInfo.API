@@ -22,7 +22,7 @@ namespace CityInfo.API.Controllers
             }
         }
 
-        [HttpGet("{pointId}")]
+        [HttpGet("{pointId}",Name = "GetPointOfIntrest")]
         public ActionResult<PointOfIntrestDto> GetPointOfIntrest(int id,int pointId)
         {
             var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == id);
@@ -39,6 +39,39 @@ namespace CityInfo.API.Controllers
                 
                 return Ok(point);
             
+        }
+
+        [HttpPost]
+        public ActionResult<PointOfIntrestDto> CreatepointOfIntrest
+            (int id,
+            PointOfIntrestForCreateDto pointOfIntrest)//اتربیوت فرام بادی به صورت دیفالت هم همین است یعنی این این امکان وجود دارد که این اتربوت رانزاریم.
+        {
+            var city= CityDataStore.current.Cities.FirstOrDefault(p => p.Id == id);
+            if(city == null)
+            {
+                return NotFound();  
+            }
+            var maxPointOfIntrestId = CityDataStore.current.Cities.
+                SelectMany(p => p.PointOfIntrests).
+                Max(p => p.Id);
+
+            var point = new PointOfIntrestDto()
+            {
+                Id = ++maxPointOfIntrestId,
+                Name = pointOfIntrest.Name,
+                Description = pointOfIntrest.Description
+            };
+
+            city.PointOfIntrests.Add(point);
+
+            return CreatedAtAction("GetPointOfIntrest", new
+            {
+                id = id,
+                pointId=point.Id
+            },
+            point
+            
+            );    
         }
     }
 }
