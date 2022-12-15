@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
 {
-    [Route("api/cities/{id}/pointofintrest")]
+    [Route("api/cities/{cityId}/pointofintrest")]
     [ApiController]
     public class PointOfIntrestController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<IEnumerable<PointOfIntrestDto>> GetPointOfIntrests(int id)
+        public ActionResult<IEnumerable<PointOfIntrestDto>> GetPointOfIntrests(int cityId)
         {
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == id);    
+            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
 
             if (city == null)
             {
@@ -22,11 +22,11 @@ namespace CityInfo.API.Controllers
             }
         }
 
-        [HttpGet("{pointId}",Name = "GetPointOfIntrest")]
-        public ActionResult<PointOfIntrestDto> GetPointOfIntrest(int id,int pointId)
+        [HttpGet("{pointId}", Name = "GetPointOfIntrest")]
+        public ActionResult<PointOfIntrestDto> GetPointOfIntrest(int cityId, int pointId)
         {
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == id);
-            if(city == null)
+            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
             {
                 return NotFound();
             }
@@ -35,21 +35,26 @@ namespace CityInfo.API.Controllers
             {
                 return NotFound();
             }
-            
-                
-                return Ok(point);
-            
-        }
 
+
+            return Ok(point);
+
+        }
+        #region Create
         [HttpPost]
         public ActionResult<PointOfIntrestDto> CreatepointOfIntrest
-            (int id,
-            PointOfIntrestForCreateDto pointOfIntrest)//اتربیوت فرام بادی به صورت دیفالت هم همین است یعنی این این امکان وجود دارد که این اتربوت رانزاریم.
+    (int cityId,
+    PointOfIntrestForCreateDto pointOfIntrest)//اتربیوت فرام بادی به صورت دیفالت هم همین است یعنی این این امکان وجود دارد که این اتربوت رانزاریم.
         {
-            var city= CityDataStore.current.Cities.FirstOrDefault(p => p.Id == id);
-            if(city == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();  
+                return BadRequest();
+            }
+
+            var city = CityDataStore.current.Cities.FirstOrDefault(p => p.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
             }
             var maxPointOfIntrestId = CityDataStore.current.Cities.
                 SelectMany(p => p.PointOfIntrests).
@@ -66,12 +71,42 @@ namespace CityInfo.API.Controllers
 
             return CreatedAtAction("GetPointOfIntrest", new
             {
-                id = id,
-                pointId=point.Id
+                cityId = cityId,
+                pointId = point.Id
             },
             point
-            
-            );    
+
+            );
         }
+
+        #endregion
+        #region Update
+
+        [HttpPut("{pointId}")]
+        public ActionResult UpdatePointOfIntrestDto(
+            int cityId,
+            int pointId,
+            PointOfIntrestForUpdateDto pointOfIntrest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var city= CityDataStore.current.Cities.FirstOrDefault(c=>c.Id == cityId);
+            if(city == null)
+                return NotFound();  
+
+            var point=city.PointOfIntrests.FirstOrDefault(p => p.Id == pointId);
+            if (point == null)
+                return NotFound();
+
+            point.Name= pointOfIntrest.Name;
+            point.Description= pointOfIntrest.Description;
+
+            return NoContent();
+        }
+
+        #endregion
     }
 }

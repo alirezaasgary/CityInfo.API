@@ -2,9 +2,7 @@
 
 namespace CityInfo.API.Models
 {
-
-    //todo---Fluent Validation
-    public class PointOfIntrestForCreateDto
+    public class PointOfIntrestForUpdateDto
     {
         [Required]
         [MaxLength(50)]
