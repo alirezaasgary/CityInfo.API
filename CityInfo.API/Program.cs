@@ -8,7 +8,8 @@ builder.Services.AddControllers( option =>
 { 
     
     option.ReturnHttpNotAcceptable=true; //جهت پشتیبانی از فرمت خواص
-}).AddXmlDataContractSerializerFormatters(); //جهت پشتیبانی از فرمت xml
+}).AddNewtonsoftJson()
+    .AddXmlDataContractSerializerFormatters(); //جهت پشتیبانی از فرمت xml
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
