@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
+﻿using CityInfo.API.Services;
+using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
 
 //تنظیمات لاگ زدن 
@@ -9,7 +10,7 @@ Log.Logger=new LoggerConfiguration()
     .CreateLogger(); 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog();
+builder.Host.UseSerilog(); //فعال کردن سری لاگ.
 
 // Add services to the container.
 
@@ -25,6 +26,7 @@ builder.Services.AddControllers( option =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+builder.Services.AddScoped<LocalMailService>();
 
 //Addsingleton : یک عدد نمونه سازی کن و بده همه استفاده کنن
 //AddScope : به ازای هر کار بر یک نمونه بساز و بده استفاده کنه

@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,11 @@ namespace CityInfo.API.Controllers
     public class PointOfIntrestController : ControllerBase
     {
         private readonly ILogger<PointOfIntrestController> _logger;
-        public PointOfIntrestController(ILogger<PointOfIntrestController> logger)
+        private readonly LocalMailService _localMailService;
+        public PointOfIntrestController(ILogger<PointOfIntrestController> logger , LocalMailService localMailService)
         {
-            _logger= logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _localMailService = localMailService ?? throw new ArgumentNullException(nameof(localMailService));
         }
 
         [HttpGet]
@@ -21,7 +24,7 @@ namespace CityInfo.API.Controllers
 
             try
             {
-                throw new Exception("create error sample"); //ایجاد اکسپشن دستی جهت تست لاگ اررور اکشن
+                //throw new Exception("create error sample"); //ایجاد اکسپشن دستی جهت تست لاگ اررور اکشن
                 if (city == null)
                 {
                     _logger.LogInformation($"city with id={cityId} was not found");
@@ -35,7 +38,7 @@ namespace CityInfo.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogCritical($"Exeption error for cityId={cityId}", ex);
-                return StatusCode(500,"Server has problem")                ;
+                return StatusCode(500, "Server has problem");
             }
         }
 
@@ -132,11 +135,11 @@ namespace CityInfo.API.Controllers
         public ActionResult PartiallyUpdatePointOfIntrest(
             int cityId,
             int pointId,
-            JsonPatchDocument<PointOfIntrestForUpdateDto> patchDocument 
+            JsonPatchDocument<PointOfIntrestForUpdateDto> patchDocument
 
             )
         {
-            
+
 
             var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
@@ -152,9 +155,9 @@ namespace CityInfo.API.Controllers
                 Description = point.Description
             };
 
-            patchDocument.ApplyTo(pointOfIntrestToPath,ModelState);
+            patchDocument.ApplyTo(pointOfIntrestToPath, ModelState);
 
-           
+
 
             if (!ModelState.IsValid) //این برای مدل استیت اصلی است 
             {
@@ -175,7 +178,7 @@ namespace CityInfo.API.Controllers
 
         #region Delete
         [HttpDelete("{pointId}")]
-        public ActionResult DeletePointOfIntrest(int cityId,int pointId)
+        public ActionResult DeletePointOfIntrest(int cityId, int pointId)
         {
             var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
@@ -185,7 +188,14 @@ namespace CityInfo.API.Controllers
             if (point == null)
                 return NotFound();
 
-            city.PointOfIntrests.Remove(point); 
+            city.PointOfIntrests.Remove(point);
+
+            //امکان ارسال ایمسل
+            _localMailService.Send("Delete Point of intrest",
+                $"point of intrest name={point.Name} was delete"
+                );
+
+
             return NoContent();
 
         }
