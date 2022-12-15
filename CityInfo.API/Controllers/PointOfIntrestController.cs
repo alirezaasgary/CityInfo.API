@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -80,6 +81,7 @@ namespace CityInfo.API.Controllers
         }
 
         #endregion
+
         #region Update
 
         [HttpPut("{pointId}")]
@@ -93,16 +95,58 @@ namespace CityInfo.API.Controllers
                 return BadRequest();
             }
 
-            var city= CityDataStore.current.Cities.FirstOrDefault(c=>c.Id == cityId);
-            if(city == null)
-                return NotFound();  
+            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+                return NotFound();
 
-            var point=city.PointOfIntrests.FirstOrDefault(p => p.Id == pointId);
+            var point = city.PointOfIntrests.FirstOrDefault(p => p.Id == pointId);
             if (point == null)
                 return NotFound();
 
-            point.Name= pointOfIntrest.Name;
-            point.Description= pointOfIntrest.Description;
+            point.Name = pointOfIntrest.Name;
+            point.Description = pointOfIntrest.Description;
+
+            return NoContent();
+        }
+
+        #endregion
+
+        #region Update with patch
+        [HttpPatch("{pointId}")]
+        public ActionResult PartiallyUpdatePointOfIntrest(
+            int cityId,
+            int pointId,
+            JsonPatchDocument<PointOfIntrestForUpdateDto> patchDocument 
+
+            )
+        {
+            
+
+            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+                return NotFound();
+
+            var point = city.PointOfIntrests.FirstOrDefault(p => p.Id == pointId);
+            if (point == null)
+                return NotFound();
+
+            var pointOfIntrestToPath = new PointOfIntrestForUpdateDto
+            {
+                Name = point.Name,
+                Description = point.Description
+            };
+
+            patchDocument.ApplyTo(pointOfIntrestToPath,ModelState);
+
+           
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            point.Name = pointOfIntrestToPath.Name;
+            point.Description = pointOfIntrestToPath.Description;
 
             return NoContent();
         }
