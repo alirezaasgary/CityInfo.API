@@ -140,7 +140,11 @@ namespace CityInfo.API.Controllers
 
            
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) //این برای مدل استیت اصلی است 
+            {
+                return BadRequest();
+            }
+            if (!TryValidateModel(pointOfIntrestToPath))
             {
                 return BadRequest();
             }
@@ -151,6 +155,24 @@ namespace CityInfo.API.Controllers
             return NoContent();
         }
 
+        #endregion
+
+        #region Delete
+        [HttpDelete("{pointId}")]
+        public ActionResult DeletePointOfIntrest(int cityId,int pointId)
+        {
+            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+                return NotFound();
+
+            var point = city.PointOfIntrests.FirstOrDefault(p => p.Id == pointId);
+            if (point == null)
+                return NotFound();
+
+            city.PointOfIntrests.Remove(point); 
+            return NoContent();
+
+        }
         #endregion
     }
 }
