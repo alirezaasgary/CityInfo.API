@@ -8,18 +8,34 @@ namespace CityInfo.API.Controllers
     [ApiController]
     public class PointOfIntrestController : ControllerBase
     {
+        private readonly ILogger<PointOfIntrestController> _logger;
+        public PointOfIntrestController(ILogger<PointOfIntrestController> logger)
+        {
+            _logger= logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<PointOfIntrestDto>> GetPointOfIntrests(int cityId)
         {
             var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
 
-            if (city == null)
+            try
             {
-                return NotFound();
+                throw new Exception("create error sample"); //ایجاد اکسپشن دستی جهت تست لاگ اررور اکشن
+                if (city == null)
+                {
+                    _logger.LogInformation($"city with id={cityId} was not found");
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(city.PointOfIntrests);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(city.PointOfIntrests);
+                _logger.LogCritical($"Exeption error for cityId={cityId}", ex);
+                return StatusCode(500,"Server has problem")                ;
             }
         }
 

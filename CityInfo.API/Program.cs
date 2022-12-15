@@ -1,6 +1,15 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
+using Serilog;
+
+//تنظیمات لاگ زدن 
+Log.Logger=new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/CityInfo.txt",rollingInterval:RollingInterval.Day)
+    .CreateLogger(); 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
