@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Services;
+﻿using CityInfo.API;
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
 
@@ -26,8 +27,9 @@ builder.Services.AddControllers( option =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.AddScoped<LocalMailService>();
+builder.Services.AddScoped<ILocalMailService,LocalMailService>();
 
+builder.Services.AddSingleton<CityDataStore>();
 //Addsingleton : یک عدد نمونه سازی کن و بده همه استفاده کنن
 //AddScope : به ازای هر کار بر یک نمونه بساز و بده استفاده کنه
 

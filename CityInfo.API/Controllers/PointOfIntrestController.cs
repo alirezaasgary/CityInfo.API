@@ -10,17 +10,20 @@ namespace CityInfo.API.Controllers
     public class PointOfIntrestController : ControllerBase
     {
         private readonly ILogger<PointOfIntrestController> _logger;
-        private readonly LocalMailService _localMailService;
-        public PointOfIntrestController(ILogger<PointOfIntrestController> logger , LocalMailService localMailService)
+        private readonly ILocalMailService _localMailService;
+        private readonly CityDataStore cityDataStore;
+
+        public PointOfIntrestController(ILogger<PointOfIntrestController> logger, ILocalMailService localMailService, CityDataStore cityDataStore)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _localMailService = localMailService ?? throw new ArgumentNullException(nameof(localMailService));
+            this.cityDataStore = cityDataStore;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<PointOfIntrestDto>> GetPointOfIntrests(int cityId)
         {
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
 
             try
             {
@@ -45,7 +48,7 @@ namespace CityInfo.API.Controllers
         [HttpGet("{pointId}", Name = "GetPointOfIntrest")]
         public ActionResult<PointOfIntrestDto> GetPointOfIntrest(int cityId, int pointId)
         {
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
                 return NotFound();
@@ -63,20 +66,20 @@ namespace CityInfo.API.Controllers
         #region Create
         [HttpPost]
         public ActionResult<PointOfIntrestDto> CreatepointOfIntrest
-    (int cityId,
-    PointOfIntrestForCreateDto pointOfIntrest)//اتربیوت فرام بادی به صورت دیفالت هم همین است یعنی این این امکان وجود دارد که این اتربوت رانزاریم.
+          (int cityId,
+           PointOfIntrestForCreateDto pointOfIntrest)//اتربیوت فرام بادی به صورت دیفالت هم همین است یعنی این این امکان وجود دارد که این اتربوت رانزاریم.
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var city = CityDataStore.current.Cities.FirstOrDefault(p => p.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(p => p.Id == cityId);
             if (city == null)
             {
                 return NotFound();
             }
-            var maxPointOfIntrestId = CityDataStore.current.Cities.
+            var maxPointOfIntrestId = cityDataStore.Cities.
                 SelectMany(p => p.PointOfIntrests).
                 Max(p => p.Id);
 
@@ -114,7 +117,7 @@ namespace CityInfo.API.Controllers
                 return BadRequest();
             }
 
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
                 return NotFound();
 
@@ -141,7 +144,7 @@ namespace CityInfo.API.Controllers
         {
 
 
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
                 return NotFound();
 
@@ -180,7 +183,7 @@ namespace CityInfo.API.Controllers
         [HttpDelete("{pointId}")]
         public ActionResult DeletePointOfIntrest(int cityId, int pointId)
         {
-            var city = CityDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = cityDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
                 return NotFound();
 
