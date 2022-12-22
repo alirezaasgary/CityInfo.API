@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace CityInfo.API.Services
 {
-    public class LocalMailService
+    public class LocalMailService : ILocalMailService
     {
         string _mailFrom = "";
         string _mailTo = "";
@@ -17,7 +17,7 @@ namespace CityInfo.API.Services
         }
 
 
-        public static void Email(string subject,string to,string htmlstring)
+        public static void Email(string subject, string to, string htmlstring)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace CityInfo.API.Services
                 smtp.Port = 587;
                 smtp.Host = "smtp.gmail.com";
                 smtp.EnableSsl = false;
-                smtp.UseDefaultCredentials = true;  
+                smtp.UseDefaultCredentials = true;
                 smtp.Credentials = new NetworkCredential("bsjbase@gmail.com", "******");
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
 
