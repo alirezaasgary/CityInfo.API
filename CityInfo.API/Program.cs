@@ -1,6 +1,9 @@
 ﻿using CityInfo.API;
+using CityInfo.API.Context;
+using CityInfo.API.Repotories;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 //تنظیمات لاگ زدن 
@@ -29,7 +32,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddScoped<ILocalMailService,LocalMailService>();
 
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
 builder.Services.AddSingleton<CityDataStore>();
+
+builder.Services.AddDbContext<CityInfoContext>(option =>
+{
+    option.UseSqlite(builder.Configuration["ConnectionString:SQLightConnectionString"]);
+});
 //Addsingleton : یک عدد نمونه سازی کن و بده همه استفاده کنن
 //AddScope : به ازای هر کار بر یک نمونه بساز و بده استفاده کنه
 
