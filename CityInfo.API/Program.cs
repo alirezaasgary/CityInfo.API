@@ -1,6 +1,6 @@
 ﻿using CityInfo.API;
 using CityInfo.API.Context;
-using CityInfo.API.Repotories;
+using CityInfo.API.Repository;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +31,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddScoped<ILocalMailService,LocalMailService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // اگر پروژه دیگری نداشته باشیم .
 
 builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
