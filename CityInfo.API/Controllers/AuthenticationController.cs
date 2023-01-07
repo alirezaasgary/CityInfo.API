@@ -28,9 +28,7 @@ namespace CityInfo.API.Controllers
             {
                 return Unauthorized();
             }
-            var securityKey = new SymmetricSecurityKey(
-                Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]
-                );
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]));
             return null;
         }
 
