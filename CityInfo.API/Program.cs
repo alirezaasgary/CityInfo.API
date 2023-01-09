@@ -4,7 +4,9 @@ using CityInfo.API.Repository;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 //تنظیمات لاگ زدن 
 Log.Logger=new LoggerConfiguration()
@@ -44,6 +46,20 @@ builder.Services.AddDbContext<CityInfoContext>(option =>
 //Addsingleton : یک عدد نمونه سازی کن و بده همه استفاده کنن
 //AddScope : به ازای هر کار بر یک نمونه بساز و بده استفاده کنه
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = true,
+            ValidIssuer = builder.Configuration["Authentication:Issuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+
+        };
+    });
 
 var app = builder.Build();
 
@@ -60,6 +76,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
