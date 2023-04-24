@@ -8,7 +8,12 @@ namespace CityInfo.API.Profiles
     {
         public PointOfIntrestProfile()
         {
-            CreateMap<PointOfIntrest,PointOfIntrestDto>();
+            CreateMap<PointOfIntrest,PointOfIntrestDto>()
+             .ForMember(dest => dest.cityName, opt => opt.MapFrom(src => src.City.Name ))
+             .ForMember(dest => dest.Institution, opt => opt.MapFrom(src => src.City.Affiliation.Name))
+
+
+             ;
 
             CreateMap<PointOfIntrest, PointOfIntrestForUpdateDto>();
 

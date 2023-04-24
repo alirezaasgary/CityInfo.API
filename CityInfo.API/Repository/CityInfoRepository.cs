@@ -37,8 +37,8 @@ namespace CityInfo.API.Repository
 
         public async Task<IEnumerable<PointOfIntrest>> GetPointsAsync(int cityId)
         {
-            return await _context.PointOfIntrest.
-                Where(p=>p.CityId==cityId).ToListAsync();
+            return await _context.PointOfIntrest.Include(c=>c.City)
+                .Where(p=>p.CityId==cityId).ToListAsync();
         }
 
         public async Task<PointOfIntrest?> GetPointAsync(int cityId, int pointId)
