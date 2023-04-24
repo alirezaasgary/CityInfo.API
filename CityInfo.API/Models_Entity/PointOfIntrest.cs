@@ -17,5 +17,6 @@ namespace CityInfo.API.Models_Entity
 
         [ForeignKey("CityId")]
         public City? City { get; set; }
+       
     }
 }

@@ -15,7 +15,7 @@ namespace CityInfo.API.Models_Entity
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-
+        public Institution Affiliation { get; set; }
 
         public ICollection<PointOfIntrest> PointOfIntrests { get; set; } = new List<PointOfIntrest>();
     }

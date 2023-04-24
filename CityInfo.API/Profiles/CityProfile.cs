@@ -8,7 +8,10 @@ namespace CityInfo.API.Profiles
     {
         public CityProfile()
         {
-            CreateMap<City, CityWithOutPointOfIntrestDto>();
+            CreateMap<City, CityWithOutPointOfIntrestDto>()
+            .ForMember(dest => dest.Descriptions, opt => opt.MapFrom(src => src.Description));
+
+
             CreateMap<City,CityDto>();
         }
     }
